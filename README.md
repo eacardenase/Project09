@@ -1,2 +1,2 @@
-#  Simple UIKit app with Networking capabilites
+#  Updating Project 7 to use Grand Central Dispatchs
 

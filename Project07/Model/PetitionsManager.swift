@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PetitionsManager {
+class PetitionsManager {
     
     var delegate: PetitionsManagerDelegate?
     
@@ -20,23 +20,25 @@ struct PetitionsManager {
     }
     
     func performRequest(urlString: String) {
-        if let url = URL(string: urlString) {
-            let session = URLSession(configuration: .default)
-            let task = session.dataTask(with: url) { data, response, error in
-                if error != nil {
-                    delegate?.didFailWithError(error: error!)
-                    
-                    return
-                } else {
-                    if let safeData = data {
-                        if let petitions = parseJSON(safeData) {
-                            self.delegate?.didUpdatePetitions(self, petitions: petitions)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            if let url = URL(string: urlString) {
+                let session = URLSession(configuration: .default)
+                let task = session.dataTask(with: url) { data, response, error in
+                    if error != nil {
+                        self?.delegate?.didFailWithError(error: error!)
+                        
+                        return
+                    } else {
+                        if let safeData = data {
+                            if let petitions = self?.parseJSON(safeData) {
+                                self?.delegate?.didUpdatePetitions(self, petitions: petitions)
+                            }
                         }
                     }
                 }
+                
+                task.resume()
             }
-            
-            task.resume()
         }
     }
     

@@ -8,6 +8,6 @@
 import Foundation
 
 protocol PetitionsManagerDelegate {
-    func didUpdatePetitions(_ petitionsManager: PetitionsManager, petitions: Petitions) -> Void
+    func didUpdatePetitions(_ petitionsManager: PetitionsManager?, petitions: Petitions) -> Void
     func didFailWithError(error: Error)
 }

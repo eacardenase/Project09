@@ -50,21 +50,24 @@ class ViewController: UITableViewController, PetitionsManagerDelegate {
         navigationController?.pushViewController(vc, animated: true)
     }
     
-    func didUpdatePetitions(_ petitionsManager: PetitionsManager, petitions: Petitions) {
-        DispatchQueue.main.async {
-            self.petitions = petitions.results
-            self.tableView.reloadData()
+    func didUpdatePetitions(_ petitionsManager: PetitionsManager?, petitions: Petitions) {
+        DispatchQueue.main.async { [weak self] in
+            self?.petitions = petitions.results
+            self?.tableView.reloadData()
         }
     }
     
     func didFailWithError(error: Error) {
-        let message = "There was a problem loading the feed; please check your connection and try again. \(error.localizedDescription)"
-        
-        let ac = UIAlertController(title: "Loading error", message: message, preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "OK", style: .default))
-        
-        present(ac, animated: true)
+        DispatchQueue.main.async {
+            [weak self] in
+            
+            let message = "There was a problem loading the feed; please check your connection and try again. \(error.localizedDescription)"
+            
+            let ac = UIAlertController(title: "Loading error", message: message, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            
+            self?.present(ac, animated: true)
+        }
     }
-
 }
 
